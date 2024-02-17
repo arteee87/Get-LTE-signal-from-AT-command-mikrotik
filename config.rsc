@@ -103,8 +103,8 @@ add dont-require-permissions=no name=http_push_lte_signal_info owner=arteee87 po
     /result><result><channel>SINR</channel><value>\$valueSINR</value><unit>custom</unit><customunit>dB</c\
     ustomunit></result></prtg>\";\r\
     \n\r\
-    \n:local prtg \"http://192.168.0.7:5050\";\r\
-    \n:local token \"3EEDB517-ECB4-4952-9886-072D936B2FBF\";\r\
+    \n:local prtg \"PRTG PROBE IP:PORT";\r\
+    \n:local token \"TOKEN FORM THE HTTP PUSH DATA ADVANCED SENSOR (USE HTTP GET)\";\r\
     \n\r\
     \n/tool fetch http-method=get url=\"\$prtg/\$token\?content=\$pushdata\" http-header-field=\"h1:appli\
     cation/x-www-form-urlencoded\""
