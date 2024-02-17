@@ -2,10 +2,10 @@
 add topics=async
 
 /system script
-add dont-require-permissions=yes name=lte_info policy=\
-    ftp,reboot,read,write,policy,test,password,sniff,sensitive,romon source=\
-    "/in lte at-chat 0 input=\"AT^DEBUG\?\"\r\
-    \n/in lte at-chat 0 input=\"AT^CA_INFO\?\""
+add dont-require-permissions=yes name=lte_info owner=arteee87 policy=\
+    ftp,reboot,read,write,policy,test,password,sniff,sensitive,romon source="/in lte at-chat [find where \
+    name=lte1] input=\"AT^DEBUG\?\"\r\
+    \n/in lte at-chat [find where name=lte1] input=\"AT^CA_INFO\?\""
 add dont-require-permissions=no name=lte_log_parser policy=\
     ftp,reboot,read,write,policy,test,password,sniff,sensitive,romon source=":global lastTime;\r\
     \n\r\
@@ -90,23 +90,24 @@ add dont-require-permissions=no name=lte_log_parser policy=\
     \n        :set valueRSRP \"(err)\";\r\
     \n    }\r\
     \n}"
-add dont-require-permissions=no name=http_push_lte_signal_info policy=\
+add dont-require-permissions=no name=http_push_lte_signal_info owner=arteee87 policy=\
     ftp,reboot,read,write,policy,test,password,sniff,sensitive,romon source=":global valueSINR;\r\
     \n:global valueRSSI;\r\
     \n:global valueRSRP;\r\
     \n:global valueRSRQ;\r\
     \n\r\
-    \n:local pushdata \"<prtg><result><channel>RSRQ</channel><value>\$valueRSRQ</value><unit>custom</unit><customunit>\
-    dB</customunit></result><result><channel>RSRP</channel><value>\$valueRSRP</value><unit>custom</unit><customunit>dB\
-    m</customunit></result><result><channel>RSSI</channel><value>\$valueRSSI</value><unit>custom</unit><customunit>dBm\
-    </customunit></result><result><channel>SINR</channel><value>\$valueSINR</value><unit>custom</unit><customunit>dB</\
-    customunit></result></prtg>\";\r\
+    \n:local pushdata \"<prtg><result><channel>RSRQ</channel><value>\$valueRSRQ</value><float>1</float><u\
+    nit>custom</unit><customunit>dB</customunit></result><result><channel>RSRP</channel><value>\$valueRSR\
+    P</value><float>1</float><unit>custom</unit><customunit>dBm</customunit></result><result><channel>RSS\
+    I</channel><value>\$valueRSSI</value><float>1</float><unit>custom</unit><customunit>dBm</customunit><\
+    /result><result><channel>SINR</channel><value>\$valueSINR</value><unit>custom</unit><customunit>dB</c\
+    ustomunit></result></prtg>\";\r\
     \n\r\
-    \n:local prtg \"PRTG PROBE IP:PORT\";\r\
-    \n:local token \"TOKEN FORM THE HTTP PUSH DATA ADVANCED SENSOR (USE HTTP GET)\";\r\
+    \n:local prtg \"http://192.168.0.7:5050\";\r\
+    \n:local token \"3EEDB517-ECB4-4952-9886-072D936B2FBF\";\r\
     \n\r\
-    \n/tool fetch http-method=get url=\"\$prtg/\$token\?content=\$pushdata\" http-header-field=\"h1:application/x-www-\
-    form-urlencoded\""
+    \n/tool fetch http-method=get url=\"\$prtg/\$token\?content=\$pushdata\" http-header-field=\"h1:appli\
+    cation/x-www-form-urlencoded\""
 
 /system scheduler
 add interval=15s name=lte_info on-event="/system/script/run lte_info" policy=\
@@ -115,7 +116,3 @@ add interval=30s name=lte_log_parser on-event="/system script run lte_log_parser
     ftp,reboot,read,write,policy,test,password,sniff,sensitive,romon start-time=startup
 add interval=1m name=send_lte_info on-event="/system script run http_push_lte_signal_info" policy=\
     ftp,reboot,read,write,policy,test,password,sniff,sensitive,romon start-time=startup
-add name=fix_log on-event=":delay 20s\r\
-    \n/system/sup-output\r\
-    \n:delay 10s\r\
-    \n" policy=ftp,reboot,read,write,policy,test,password,sniff,sensitive,romon start-time=startup
