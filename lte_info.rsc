@@ -1,2 +1,2 @@
-/in lte at-chat 0 input="AT^DEBUG?"
-/in lte at-chat 0 input="AT^CA_INFO?"
+/in lte at-chat [find where name=lte1] input="AT^DEBUG?"
+/in lte at-chat [find where name=lte1] input="AT^CA_INFO?"
